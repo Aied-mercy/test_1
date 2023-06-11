@@ -1,19 +1,5 @@
 <template>
-  
     <div class="login">
-        <!-- 登陆页面设计
-        1.表单
-        2.验证（自定义）
-        3.登录实现，效果：loading
-        4 状态信息的保存 （pinia，vuex）,
-        问题刷新会出现状态信息丢失的问题，数据持久化 数据库，
-        本地持久化：持久化插件 //持久化插件 安装cnpm install pinia-plugin-persist
-        5 页面跳转
-        6 reset 
-        数据接口：http://api.jqrjq.cn/doc.html
-    -->
-        <!-- <div>数量{{userStore.count}}</div>
-    <button @click="userStore.increat">count++</button> -->
         <div class="login-form">
             <div class="login-form-logo">
                 <el-image :src="src" fit="fill" :lazy="true"></el-image>
@@ -27,7 +13,11 @@
                     <el-input v-model="userForm.password" type="password" autocomplete="off" placeholder="请输入你的用户密码"
                         suffix-icon="Lock" />
                 </el-form-item>
-
+                <el-radio-group v-model="radio" style="margin: 20px 0px 20px 20px;">
+                    <el-radio :label="1">学生</el-radio>
+                    <el-radio :label="2">教师</el-radio>
+                    <el-radio :label="3">管理员</el-radio>
+                </el-radio-group>
                 <el-form-item class="login-form-btns">
                     <el-button type="primary" @click="btnLogin">用户登录</el-button>
                     <el-button @click="resetForm">Reset</el-button>
@@ -37,15 +27,18 @@
     </div>
 </template>
 <script>
+
 import { defineComponent, ref } from "vue"
 import { mapActions, storeToRefs } from "pinia";
 import { userLogin } from "../../http";
 import { useUserStore } from "../../store/user";
 export default defineComponent({
     setup() {
+        const radio = ref(3);
         const src = ref('../../src/assets/logo.png');
         return {
             src,
+            radio
         }
     },
     data() {
@@ -67,12 +60,9 @@ export default defineComponent({
             }
         }
     },
-    mounted() {
-      
-
-    },
+    mounted() {},
     methods: {
-        ...mapActions(useUserStore, ['setToken', 'fillUserinfo']),
+        ...mapActions(useUserStore, ['setToken', 'fillUserinfo','setAuthority']),
         btnLogin() {
             const that = this;
             const formEl = that.$refs.ruleFormRef //取ref对象
@@ -81,39 +71,18 @@ export default defineComponent({
             formEl.validate((valid) => {
                 if (valid) {
                     const res = userLogin(that.userForm)
-
                     res.then(result => {
-
-                        /**
-                         * 选项式
-                         * 用户的状态：登陆状态  token='',未登录，token='adbdfsdfsdfdsfds',已经登录
-                         * setToken
-                         *  保存登录用户的信息
-                         * fillUserinfo
-                         * 调用状态存储pinia的辅助函数 mapActions
-                         * methods:{
-                         * ...mapActions(useUserStore, ['setToken', 'fillUserinfo']),
-                         * }
-                         * */
-
-                        // pinia 下次解决
-                        // 跳转页面
-
                         if (result.success) {
                             const userinfo = result.data.userinfo;
-                            console.log(that);
+                            console.log(this.radio)
                             that.setToken(userinfo.token);
+                            that.setAuthority(this.radio)
                             that.fillUserinfo(userinfo);
-                            that.$router.push('/');
-
+                            that.$router.push('/index');
                         }
                         else {
-
                             return false;
                         }
-
-
-
                     }).catch(err => {
                         console.log(err)
                     })
@@ -133,12 +102,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-body, html {
-  margin: 0;
+body,
+html {
+    margin: 0;
 }
-canvas{
+
+canvas {
     display: block;
 }
+
 .login {
     height: calc(100vh - 20px);
     width: 100%;

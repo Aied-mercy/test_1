@@ -18,42 +18,10 @@ const adminLogin=(data)=>{
    })
 }
 
-const adCatePage=(data)=>{
-   return instance.request({
-    url:'api/adcate/page',
-    method:'post',
-    data
-   })
-}
-const adCateDelId=(params)=>{
-    return instance.request({
-        url:'api/adcate/delete',
-        params
-    })
-}
-const adCateAdd=(data)=>{
-    return instance.request({
-        url:'api/adcate/add',
-        method:'post',
-        data
-    })
-}
-const adCateEdit=(data)=>{
-    return instance.request({
-        url:'api/adcate/edit',
-        method:'post',
-        data
-    })
-}
 
-// const isEven = n => n % 2 === 0;
 
 
 export {
     userLogin,
     adminLogin,
-    adCatePage,
-    adCateDelId,
-    adCateAdd,
-    adCateEdit,
 } 

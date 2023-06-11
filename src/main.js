@@ -5,21 +5,23 @@ import 'element-plus/dist/index.css' //全局样式
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import axios from './http/axios'
 import  pinia from './utils/pinia'
-import { TroisJSVuePlugin } from 'troisjs';
+import moment from 'moment'
+// Vue.prototype.moment=moment vue2
+// import { TroisJSVuePlugin } from 'troisjs';
 //引入组件
 //import MyComponent from './components/MyComponent.vue'
 const app = createApp(App)
 app.use(pinia) //挂载pinia
 //全局注册组件  全局组件
 //app.component('MyComponent',MyComponent)
-
+app.config.globalProperties.$moment = moment
 app.use(router) //挂载router
 
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-app.use(TroisJSVuePlugin);
+// app.use(TroisJSVuePlugin);
 
 app.mount('#app') //挂在index.html
 
